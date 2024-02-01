@@ -1,6 +1,7 @@
 ﻿using Coding.Exam.RainFallAPI.Configuration;
 using Coding.Exam.RainFallAPI.Controllers;
 using Coding.Exam.RainFallAPI.Interface;
+using Coding.Exam.RainFallAPI.Models;
 using Microsoft.Extensions.Options;
 
 namespace Coding.Exam.RainFallAPI.Service
@@ -15,7 +16,7 @@ namespace Coding.Exam.RainFallAPI.Service
 			_rainFallConfig = options.Value;
 		}
 
-		public async Task GetRainFallReading(int stationId, int limit)
+		public async Task<RainFallReadingResponse> GetRainFallReading(int stationId, int limit)
 		{
 			HttpClient client = new HttpClient();
 			HttpResponseMessage response = await client.GetAsync($"{_rainFallConfig.BaseUrl}/id/stations/{stationId}/readings?_sorted&_limit={limit}");
@@ -23,6 +24,8 @@ namespace Coding.Exam.RainFallAPI.Service
 			{
 				string resp = await  response.Content.ReadAsStringAsync();
 			}
+
+			return new RainFallReadingResponse { };
 		}
 	}
 }

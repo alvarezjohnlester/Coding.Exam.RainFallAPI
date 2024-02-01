@@ -1,6 +1,7 @@
 using Coding.Exam.RainFallAPI.Configuration;
 using Coding.Exam.RainFallAPI.Interface;
 using Coding.Exam.RainFallAPI.Service;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 
@@ -31,7 +32,6 @@ builder.Services.AddSwaggerGen(c =>
 		}
 	});
 });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

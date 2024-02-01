@@ -1,4 +1,5 @@
 ﻿using Coding.Exam.RainFallAPI.Interface;
+using Coding.Exam.RainFallAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel;
@@ -20,18 +21,27 @@ namespace Coding.Exam.RainFallAPI.Controllers
 
 		
 		[HttpGet("id/{stationId:range(1,100)}/readings")]
-		public async Task<ActionResult> Get(int stationId, int count = 10)
+		[ProducesResponseType(typeof(RainFallReadingResponse),StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status404NotFound)]
+		[ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(typeof(ErrorResponse),StatusCodes.Status500InternalServerError)]
+		[Consumes("application/json")]
+		[Produces("application/json")]
+		public async Task<IActionResult> Get(int stationId, int count = 10)
 		{
 			try
 			{
-				var response =  await _iRainFallService.GetRainFallReading(stationId);
-
-				return Ok();
+				if (stationId == 0 || stationId == null) { return BadRequest(new ErrorResponse { errorCode = 400, message= "invalid parameter"}); }
+				RainFallReadingResponse response =  await _iRainFallService.GetRainFallReading(stationId, count);
+				if (response.items.Count == 0)
+				{
+					return NotFound(new ErrorResponse { errorCode = 404, message = "not found" });
+				}
+				return Ok(response);
 			}
-			catch (Exception)
+			catch (Exception ex )
 			{
-
-				throw;
+				return StatusCode(500, new ErrorResponse { errorCode = 404, message = "internal server error" }); 
 			}
 			
 		}
