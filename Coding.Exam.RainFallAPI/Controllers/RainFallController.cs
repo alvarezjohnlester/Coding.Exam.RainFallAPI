@@ -1,12 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel;
 
 namespace Coding.Exam.RainFallAPI.Controllers
 {
-	public class RainFallController : Controller
+	[ApiController]
+	[Route("[controller]/")]
+	public class RainFallController : ControllerBase
 	{
-		public IActionResult Index()
+		private readonly ILogger<RainFallController> _logger;
+		public RainFallController(ILogger<RainFallController> logger)
+        {
+			_logger = logger;
+		}
+
+		
+		[HttpGet("id/{stationId}/readings")]
+		public async Task<ActionResult> Get(int stationId)
 		{
-			return View();
+			return Ok();
 		}
 	}
 }

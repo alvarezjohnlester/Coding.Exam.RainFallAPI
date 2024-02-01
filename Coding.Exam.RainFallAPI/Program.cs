@@ -9,10 +9,20 @@ ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.Configure<OpenAPIDoc>(configuration.GetSection("OpenAPIDoc"));
+var openAPIDoc = builder.Configuration.GetSection("OpenAPIDoc").Get<OpenAPIDoc>();
 builder.Services.AddSwaggerGen(c =>
 {
-	c.SwaggerDoc("v1", new OpenApiInfo { Title = "RainFall API", Version = "1.0" , Description = "An API which provides rainfall reading data"});
+	c.SwaggerDoc("v1", new OpenApiInfo
+	{
+		Title = openAPIDoc.Title,
+		Version = openAPIDoc.Version,
+		Description = openAPIDoc.Description,
+		Contact = new OpenApiContact()
+		{
+			Name = openAPIDoc.Contract.Name,
+			Url = new Uri(openAPIDoc.Contract.Url)
+		}
+	});
 });
 
 var app = builder.Build();
